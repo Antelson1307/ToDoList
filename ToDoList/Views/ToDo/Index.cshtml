@@ -1,0 +1,38 @@
+﻿@model ToDoList.Models.ViewModel.ToDoVM
+<h1>ToDo List</h1>
+<div class="row">
+    <div class="col-10"></div>
+    <div class="col-2"><form method="get"><button asp-action="Create" asp-controller="ToDo" class="btn">Create</button></form></div>
+</div>
+<table id="example" class="display" style="width:100%">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Description</th>
+            <th>TypeName</th>
+            <th>From</th>
+            <th>To date</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var obj in Model.ToDoList)
+        {
+            <tr>
+                <td>@obj.Id</td>
+                <td>@obj.Description</td>
+                <td>@obj.ToDoTypeName</td>
+                <td>@obj.From</td>
+                <td>@obj.To</td>
+                <td><a asp-action="Edit" asp-route-id="@obj.Id">Edit</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            new DataTable('#example');
+        });
+    </script>
+}

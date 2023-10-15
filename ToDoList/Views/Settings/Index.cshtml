@@ -1,0 +1,84 @@
+﻿@model ToDoList.Models.ViewModel.SettingsVM
+
+<h1>Settings</h1>
+
+<div class="row">
+    <div class="col-8">
+        <table id="example" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Settings == null)
+                {
+                    <tr>
+                        <td colspan="3">No Data to display</td>
+                    </tr>
+                }
+                else
+                @foreach(var obj in Model.Settings)
+                {
+                    <tr>
+                        <td>@obj.Id</td>
+                        <td>@obj.Name</td>
+                            <td>
+                                <a class="btn btnNotCancel" onclick="editClick(@obj.Id,'@obj.Name')">Edit</a>&nbsp;&nbsp;<a class="btn btnNotCancel" onclick="deleteClick(@obj.Id)">Delete</a>
+                                <a class="btn btnCancel" onclick="cancelClick()">Cancel</a>
+                            </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-4">
+        <form method="post" asp-controller="Settings" asp-action="Index">
+        <div class="row">
+            <div class="c0l-4"><label asp-for="@Model.ToDoType.Name">Name</label></div>
+                <div class="c0l-6"><input id="txtTodoTypeName" class="form-control" asp-for="@Model.ToDoType.Name" /></div>
+            <div class="c0l-4"><input id="hdnTodoTypeId" type="hidden" asp-for="@Model.ToDoType.ToDoTypeId"/></div>
+                <div class="c0l-6"><br /><input class="form-control btnNotCancel" type="submit" value="Create" />
+                    <input class="form-control btnCancel" type="submit" value="Edit" />
+                </div>
+        </div>
+        </form>
+    </div>
+</div>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $(".btnCancel").hide();
+            new DataTable('#example');
+        });
+        function editClick(val,text){
+            $("#txtTodoTypeName").val(text);
+            $("#hdnTodoTypeId").val(val);
+            $(".btnNotCancel").hide();
+            $(".btnCancel").show();
+        }
+        function cancelClick() {
+            $("#txtTodoTypeName").val("");
+            $("#hdnTodoTypeId").val("");
+            $(".btnNotCancel").show();
+            $(".btnCancel").hide();
+        }
+        function deleteClick(val) {
+            $.ajax(
+                {
+                    type: "DELETE", //HTTP POST Method
+                    url: "@Url.Action("DeleteToDoType","Settings")", // Controller/View
+                    data: { //Passing data
+                        Id: val
+                    },
+                    success: function (result) {
+                        if(result){
+                            window.location.href = '/Settings/Index';
+                        }
+                    }
+                });
+        }
+    </script>
+}
